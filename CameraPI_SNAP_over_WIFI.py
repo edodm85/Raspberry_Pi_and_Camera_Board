@@ -3,13 +3,7 @@ import socket
 import picamera
 import numpy as np
 import select
-
-
-is_py2 = sys.version[0] == '2'
-if is_py2:
-    import Queue
-else:
-    import Queue as queue
+import queue        #Python3
 
 
 
@@ -32,37 +26,37 @@ def comandInit(cmd):
     global height
     global format
 
-    strOk = "OK"
+    strOk = b"OK"
 
     # Parse resolution
-    if "19200" in cmd:
+    if b"19200" in cmd:
         width = 160
         height = 120
-    elif "76800" in cmd:
+    elif b"76800" in cmd:
         width = 320
         height = 240
-    elif "307200" in cmd:
+    elif b"307200" in cmd:
         width = 640
         height = 480
-    elif "921600" in cmd:
+    elif b"921600" in cmd:
         width = 1280
         height = 720
-    elif "2073600" in cmd:
+    elif b"2073600" in cmd:
         width = 1920
         height = 1080
-    elif "5038848" in cmd:
+    elif b"5038848" in cmd:
         width = 2592
         height = 1944
     else:
-        strOk = "Not Supported"
+        strOk = b"Not Supported"
 
     # Set B&W or YUV
-    if "BAW" in cmd:
+    if b"BAW" in cmd:
         format = "BAW"
-    elif "YUV420" in cmd:
+    elif b"YUV420" in cmd:
         format = "YUV"
     else:
-        strOk = "Not Supported"
+        strOk = b"Not Supported"
 
     return strOk
 
@@ -97,11 +91,11 @@ def cameraSnap():
 
     # Load U
     U = np.fromfile(stream, dtype=np.uint8, count=(fwidth // 2) * (fheight // 2))
-    OUT_U = U[:(width * height) / 4]
+    OUT_U = U[:(int)((width * height) / 4)]
 
     # Load V
     V = np.fromfile(stream, dtype=np.uint8, count=(fwidth // 2) * (fheight // 2))
-    OUT_V = V[:(width * height) / 4]
+    OUT_V = V[:(int)((width * height) / 4)]
 
 
     # output color array
@@ -115,19 +109,19 @@ def cameraSnap():
 
 # Command reader
 def parseCMD(cmd, conn):
-    str = "HELLO"
+    str = b"HELLO"
 
-    if "init" in cmd:
+    if b"init" in cmd:
         camera.stop_preview()
         ack = comandInit(cmd)
         comandCamera()
-        if ack in "OK":
-            str = "OV Init OK\n"
+        if ack in b"OK":
+            str = b"OV Init OK\n"
         else:
-            str = ack + "\n"
+            str = ack + b"\n"
 
-    if cmd == "snap":
-        conn.send("sRt")
+    if cmd == b"snap":
+        conn.send(b"sRt")
         str = cameraSnap()
 
     return str
@@ -151,15 +145,15 @@ while inputs:
     for s in readable:
         if s is server_socket:
             connection, client_address = s.accept()
-            print ('Connection address:', client_address)
+            print("Connection address:", client_address)
             # socket nonblocking
             connection.setblocking(0)
             inputs.append(connection)
-            message_queues[connection] = Queue.Queue()
+            message_queues[connection] = queue.Queue()
         else:
             data = s.recv(BUFFER_SIZE)
             if data:
-                print ("received data:", data)
+                print("received data:", data)
                 dataRisp = parseCMD(data, s)
 
                 if len(dataRisp) > BYTE_SEND:
@@ -175,14 +169,14 @@ while inputs:
                     outputs.remove(s)
                 inputs.remove(s)
                 s.close()
-                print ('Connection disconnect')
+                print("Connection disconnect")
                 camera.stop_preview()
                 del message_queues[s]
 
     for s in writable:
         try:
             next_msg = message_queues[s].get_nowait()
-        except Queue.Empty:
+        except queue.Empty:
             outputs.remove(s)
         else:
             s.send(next_msg)
@@ -192,7 +186,7 @@ while inputs:
         if s in outputs:
             outputs.remove(s)
         s.close()
-        print ('Connection disconnect')
+        print("Connection disconnect")
         camera.stop_preview()
         del message_queues[s]
 
