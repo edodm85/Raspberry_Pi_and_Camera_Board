@@ -14,3 +14,10 @@ My Android App that you can download from Google Play here:
 ## How does it work?
 
 SOON
+
+
+## License
+
+> Copyright (C) 2018 edodm85.  
+> Licensed under the MIT license.  
+> (See the [LICENSE](https://github.com/edodm85/Raspberry_Pi_and_Camera_Board/blob/master/LICENSE) file for the whole license text.)
