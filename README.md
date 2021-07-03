@@ -13,8 +13,13 @@ My Android App that you can download from Google Play here:
 
 ## How does it work?
 
-SOON
+ ```shell
+$ git clone git@github.com:edodm85/Raspberry_Pi_and_Camera_Board.git
 
+$ cd Raspberry_Pi_and_Camera_Board
+
+$ python3 CameraPI_SNAP_over_WIFI.py
+  ```
 
 ## License
 
