@@ -18,7 +18,7 @@ $ git clone git@github.com:edodm85/Raspberry_Pi_and_Camera_Board.git
 
 $ cd Raspberry_Pi_and_Camera_Board
 
-$ python3 CameraPI_SNAP_over_WIFI.py
+$ python3 CameraPI_SNAP_over_WIFI_DOT.py
   ```
 
 ## License
