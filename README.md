@@ -47,6 +47,11 @@ OV Grabber:
 
 
 <br>
+
+The protocol description is here: https://github.com/edodm85/DOT_Protocol_Specification
+
+
+<br>
   
   
   
